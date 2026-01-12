@@ -26,6 +26,7 @@
         .form-label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: #555; }
         .form-input { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; transition: 0.2s; }
         .form-input:focus { border-color: #003366; outline: none; box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1); }
+        .form-input:disabled { background: #f0f0f0; cursor: not-allowed; color: #666; }
         .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
         /* --- BUTTONS --- */
@@ -109,8 +110,8 @@
                     <input type="number" id="tenor" class="form-input" placeholder="Contoh: 12">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Margin (%)</label>
-                    <input type="number" id="Margin" class="form-input" placeholder="Contoh: 12">
+                    <label class="form-label">Margin (%) - Fixed</label>
+                    <input type="number" id="Margin" class="form-input" value="25" disabled>
                 </div>
             </div>
 
@@ -252,7 +253,7 @@
         function resetForm() {
             document.getElementById('plafond').value = '';
             document.getElementById('tenor').value = '';
-            document.getElementById('Margin').value = '';
+            document.getElementById('Margin').value = '25'; // Tetap 25
             document.getElementById('biayaAdmin').value = '0';
             
             document.getElementById('resultAngsuran').textContent = 'Rp 0';
@@ -267,11 +268,11 @@
         function hitungKredit() {
             const P = parseFloat(document.getElementById('plafond').value); // Plafond
             const n = parseFloat(document.getElementById('tenor').value); // Tenor (Bulan)
-            const i = parseFloat(document.getElementById('Margin').value) / 100; // Margin (Desimal per tahun)
+            const i = 25 / 100; // Margin FIXED 25%
             const admin = parseFloat(document.getElementById('biayaAdmin').value) || 0;
 
-            if (!P || !n || !i) {
-                alert('Mohon lengkapi data: Plafond, Tenor, dan Margin.');
+            if (!P || !n) {
+                alert('Mohon lengkapi data: Plafond dan Tenor.');
                 return;
             }
 
@@ -296,7 +297,7 @@
             // UPDATE PROPOSAL DATA
             document.getElementById('propPlafond').textContent = formatRp(P);
             document.getElementById('propTenor').textContent = n;
-            document.getElementById('propMargin').textContent = (i * 100);
+            document.getElementById('propMargin').textContent = 25; // Fixed 25
             document.getElementById('propAdmin').textContent = formatRp(admin);
             document.getElementById('propAngsuran').textContent = formatRp(angsuranPerBulan);
             document.getElementById('propTotal').textContent = formatRp(totalBayar);
@@ -307,9 +308,9 @@
         function openModal() {
             const P = parseFloat(document.getElementById('plafond').value);
             const n = parseFloat(document.getElementById('tenor').value);
-            const i = parseFloat(document.getElementById('Margin').value) / 100;
+            const i = 25 / 100; // Fixed 25%
 
-            if (!P || !n || !i) return hitungKredit();
+            if (!P || !n) return hitungKredit();
 
             // Generate Table Data
             const totalMargin = (P * i * n) / 12;
